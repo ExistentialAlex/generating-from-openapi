@@ -1,0 +1,92 @@
+---
+layout: image-left
+image: /assets/login-page.png
+---
+
+# Using the Generated Code
+
+```vue [login.vue] {all|27-30|63-80|38-52|39|41-48|50-51} {maxHeight: '350px'}
+<script setup lang="ts">
+import type { Auth } from 'orval-test-schemas';
+import { AuthSchema } from 'orval-test-schemas';
+import { definePage } from 'unplugin-vue-router/runtime';
+import { reactive, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRoute, useRouter } from 'vue-router';
+import { postAuthLogin } from '@/api/endpoints/authentication/authentication';
+import { useUserSession } from '@/composables';
+
+definePage({
+  name: 'login',
+  meta: {
+    title: 'app.pages.login.title',
+    requiresAuth: false,
+    layout: 'none',
+  },
+});
+
+const { fetch: refreshSession } = useUserSession();
+
+const router = useRouter();
+const route = useRoute();
+const toast = useToast();
+const { t } = useI18n();
+
+const credentials = reactive<Auth>({
+  email: '',
+  organisation: '',
+});
+const organisations = ref([
+  'Organisation A',
+  'Organisation B',
+  'Test Organisation A',
+  'Test Organisation B',
+]);
+
+const login = async () => {
+  const res = await postAuthLogin(credentials);
+
+  if (res.status === 401) {
+    toast.add({
+      title: t('app.pages.login.toasts.login.error'),
+      description: res.data.message,
+      color: 'error',
+    });
+    return;
+  }
+
+  await refreshSession();
+  router.push((route.query.redirect as string) || '/');
+};
+</script>
+
+<template>
+  <div class="grid h-screen place-items-center">
+    <UCard>
+      <template #header>
+        <h1 class="text-center text-lg">
+          {{ t('app.pages.login.header') }}
+        </h1>
+      </template>
+      <UForm class="flex flex-col gap-4" :schema="AuthSchema" :state="credentials" @submit="login">
+        <UFormField :label="t('app.pages.login.form.email.label')" name="email" required>
+          <UInput
+            v-model="credentials.email" class="w-full" :placeholder="t('app.pages.login.form.email.placeholder')"
+            data-testid="login-form:email"
+          />
+        </UFormField>
+        <UFormField :label="t('app.pages.login.form.organisation.label')" name="organisation" required class="flex-1">
+          <USelect
+            v-model="credentials.organisation" :items="organisations" class="w-full"
+            :placeholder="t('app.pages.login.form.organisation.placeholder')" data-testid="login-form:organisation"
+          />
+        </UFormField>
+        <USeparator />
+        <UButton icon="i-lucide-log-in" class="mx-auto" data-testid="login-form:submit" type="submit">
+          {{ t('app.pages.login.form.submit') }}
+        </UButton>
+      </UForm>
+    </UCard>
+  </div>
+</template>
+```
