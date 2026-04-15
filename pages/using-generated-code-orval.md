@@ -3,7 +3,7 @@ layout: image-left
 image: /assets/login-page.png
 ---
 
-# Using the Generated Code
+# Using the Generated Code (Orval)
 
 ```vue [login.vue] {all|27-30|63-80|38-52|39|41-48|50-51} {maxHeight: '350px'}
 <script setup lang="ts">
