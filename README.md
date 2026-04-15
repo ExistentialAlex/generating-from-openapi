@@ -1,6 +1,11 @@
-# Using Orval!
+# Generating Code from OpenAPI Schemas
 
-An exploration into Orval, a library for transforming OpenAPI specs into type-safe clients, mocks and validators.
+An exploration into different libraries for transforming OpenAPI specs into type-safe clients, mocks and validators.
+
+## Libraries Explored
+
+- [Orval](https://orval.dev/)
+- [Hey API](https://heyapi.dev/)
 
 ## Start
 
